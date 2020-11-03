@@ -9,6 +9,9 @@ public class Player : MonoBehaviour
 {
     //a variable that can be edited from Unity    
     [SerializeField] float moveSpeed = 10f;
+    [SerializeField] float padding = 0.7f;
+
+    [SerializeField] GameObject laserPrefab;
 
     float xMin, xMax, yMin, yMax;
 
@@ -16,12 +19,38 @@ public class Player : MonoBehaviour
     void Start()
     {
         SetUpMoveBoundaries();
+        //start coroutine
+        StartCoroutine(PrintAndWait());
     }
 
     // Update is called once per frame
     void Update()
     {
         Move();
+        Fire();
+    }
+
+    //Coroutine example:
+    private IEnumerator PrintAndWait()
+    {
+        print("Message 1");
+        //pause coroutine execution for 10 seconds
+        yield return new WaitForSeconds(10);
+        print("Message 2 after 10 seconds");
+    }
+    
+
+    private void Fire()
+    {
+        //whenever I fire
+        if (Input.GetButtonDown("Fire1"))
+        {
+            //create a Laser Prefab, at the Player position
+            GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            //gives velocity to each laser in the y-axis
+            laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 15f);
+
+        }
     }
 
     //setup the boundaries according to the camera
@@ -31,12 +60,12 @@ public class Player : MonoBehaviour
         Camera gameCamera = Camera.main;
 
         //xMin = 0  xMax = 1
-        xMin = gameCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).x;
-        xMax = gameCamera.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
+        xMin = gameCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).x + padding;
+        xMax = gameCamera.ViewportToWorldPoint(new Vector3(1, 0, 0)).x - padding;
 
         //yMin = 0   yMax = 1
-        yMin = gameCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
-        yMax = gameCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y;
+        yMin = gameCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + padding;
+        yMax = gameCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y - padding;
 
     }
 
@@ -48,11 +77,14 @@ public class Player : MonoBehaviour
         
         //newXPos = current x-pos of Player
         //+ difference in X by keyboard Input
-        var newXPos = Mathf.Clamp(transform.position.x + deltaX, xMin, xMax);
+        var newXPos = transform.position.x + deltaX;
+        //clamps the newXPos between xMin and xMax
+        newXPos = Mathf.Clamp(newXPos, xMin, xMax);
 
         //the same as above but in the y-axis
         var deltaY = Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed;
         var newYPos = transform.position.y + deltaY;
+        newYPos = Mathf.Clamp(newYPos, yMin, yMax);
 
         //update the position of the Player
         this.transform.position = new Vector2(newXPos, newYPos);
