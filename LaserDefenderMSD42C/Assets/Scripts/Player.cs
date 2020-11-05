@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
 
@@ -13,14 +14,17 @@ public class Player : MonoBehaviour
 
     [SerializeField] GameObject laserPrefab;
 
+    [SerializeField] float laserFiringTime = 0.3f;
+
     float xMin, xMax, yMin, yMax;
+
+    Coroutine fireCoroutine;
+
 
     // Start is called before the first frame update
     void Start()
     {
         SetUpMoveBoundaries();
-        //start coroutine
-        StartCoroutine(PrintAndWait());
     }
 
     // Update is called once per frame
@@ -31,25 +35,42 @@ public class Player : MonoBehaviour
     }
 
     //Coroutine example:
-    private IEnumerator PrintAndWait()
-    {
-        print("Message 1");
-        //pause coroutine execution for 10 seconds
-        yield return new WaitForSeconds(10);
-        print("Message 2 after 10 seconds");
-    }
+    //private IEnumerator PrintAndWait()
+    //{
+    //    print("Message 1");
+    //    //pause coroutine execution for 10 seconds
+    //    yield return new WaitForSeconds(10);
+    //    print("Message 2 after 10 seconds");
+    //}
     
+    private IEnumerator FireContinuously()
+    {
+        while (true) //while coroutine is running
+        {
+            //create a Laser Prefab, at the Player position
+            GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            //gives velocity to each laser in the y-axis
+            laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 15f);
+            //wait for x amount of seconds
+            yield return new WaitForSeconds(laserFiringTime);
+
+        }
+    }
+     
 
     private void Fire()
     {
         //whenever I fire
         if (Input.GetButtonDown("Fire1"))
         {
-            //create a Laser Prefab, at the Player position
-            GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
-            //gives velocity to each laser in the y-axis
-            laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 15f);
 
+            fireCoroutine = StartCoroutine(FireContinuously());
+        }
+
+        //when button is released
+        if (Input.GetButtonUp("Fire1"))
+        {
+            StopCoroutine(fireCoroutine);
         }
     }
 
@@ -88,6 +109,8 @@ public class Player : MonoBehaviour
 
         //update the position of the Player
         this.transform.position = new Vector2(newXPos, newYPos);
+
+        
             
     }
 
