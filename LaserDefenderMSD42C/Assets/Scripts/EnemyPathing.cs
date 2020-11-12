@@ -28,6 +28,7 @@ public class EnemyPathing : MonoBehaviour
 
     private void EnemyMove()
     {
+        //   0, 1, 2      <=    2
         if (waypointIndex <= waypoints.Count - 1)
         {
             //set the targetPosition to the waypoint where we want to go
