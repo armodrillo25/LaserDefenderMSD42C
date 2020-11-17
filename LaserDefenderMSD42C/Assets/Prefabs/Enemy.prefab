@@ -99,3 +99,5 @@ MonoBehaviour:
   - {fileID: 8133742073272651784, guid: 47f3e8a7a488d664480ba5a7334bbb64, type: 3}
   - {fileID: 1024948137296618627, guid: f6ddf923cb26b66499cb82b7c57b1396, type: 3}
   - {fileID: 7687869457015272966, guid: a7a322cea5018e34f937104373b85633, type: 3}
+  enemyMoveSpeed: 2
+  waveConfig: {fileID: 11400000, guid: c97321c9249f23c4888de32d88199616, type: 2}
