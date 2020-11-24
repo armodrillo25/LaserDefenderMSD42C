@@ -98,3 +98,4 @@ MonoBehaviour:
   moveSpeed: 10
   padding: 0.7
   laserPrefab: {fileID: 5238317135585236340, guid: ccf4f34d43840ef4aafa205e27cd3788, type: 3}
+  laserFiringTime: 0.1

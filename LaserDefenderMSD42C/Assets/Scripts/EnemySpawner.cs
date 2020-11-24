@@ -16,15 +16,13 @@ public class EnemySpawner : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        //loop all waves if true
         do
         {
             //start coroutine that spawns all waves
             yield return StartCoroutine(SpawnAllWaves());
         }
         while (looping); //while (looping == true)
-
-        
-
     }
 
     // Update is called once per frame
